@@ -1,0 +1,65 @@
+{
+  "name": "dsh-capability-discovery",
+  "version": "0.1.0",
+  "description": "A DSH Bundle that registers a multi-source capability discovery and risk inspection Skill.",
+  "type": "module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/444136347/dsh-capability-discovery.git"
+  },
+  "bugs": {
+    "url": "https://github.com/444136347/dsh-capability-discovery/issues"
+  },
+  "homepage": "https://github.com/444136347/dsh-capability-discovery#readme",
+  "bin": {
+    "dsh-capability": "./cli/dsh-capability.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check index.js && node --check cli/dsh-capability.mjs && node --check src/meta.js && node --check src/discovery/http.js && node --check src/discovery/index.js && node --check src/risk/inspect.js && node --check src/setup/profile.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "deepseek",
+    "deepseek-harness",
+    "dsh",
+    "agent",
+    "plugin-discovery",
+    "agent-skills",
+    "mcp",
+    "capability-discovery"
+  ],
+  "license": "Apache-2.0",
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "cli",
+    "src",
+    "skills",
+    "references",
+    "docs/architecture.md",
+    "docs/architecture.zh-CN.md",
+    "docs/sources.md",
+    "docs/sources.zh-CN.md",
+    "docs/publishing.md",
+    "docs/publishing.zh-CN.md",
+    "README.md",
+    "README.zh-CN.md",
+    "CHANGELOG.md",
+    "CHANGELOG.zh-CN.md",
+    "CONTRIBUTING.md",
+    "CONTRIBUTING.zh-CN.md",
+    "SECURITY.md",
+    "SECURITY.zh-CN.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}
