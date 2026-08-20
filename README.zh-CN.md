@@ -69,11 +69,11 @@ node cli/dsh-capability.mjs inspect owner/repo
 
 ### 1. 安装 Bundle
 
-安装 GitHub 已发布版本时，建议固定 tag 或 commit。当前公开版本为 `v0.1.0`：
+安装 GitHub 已发布版本时，建议固定 tag 或 commit。当前公开版本为 `v0.1.1`：
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile web add \
-  'github:444136347/dsh-capability-discovery#v0.1.0'
+  'github:444136347/dsh-capability-discovery#v0.1.1'
 ```
 
 当前版本 DSH 会同时把包加入 `dependencies`，并自动维护 `dsh.profile.bundles`。启动前先验证最终组合配置：
@@ -127,7 +127,7 @@ npx -y @deepseek-ai/dsh web
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile headless add \
-  'github:444136347/dsh-capability-discovery#v0.1.0'
+  'github:444136347/dsh-capability-discovery#v0.1.1'
 
 npx -y @deepseek-ai/dsh --profile headless \
   '/capability-discovery 帮我找适合制作 PPT 的 DSH 能力，不要安装'
@@ -225,7 +225,7 @@ dsh-capability setup [--profile web] [--json]
 
 ## 项目状态
 
-当前公开版本为 `v0.1.0`。项目保持小而可审计的核心，不包含数据库、托管后端、账户系统、市场 UI 或自动安装流程。
+当前公开版本为 `v0.1.1`。项目保持小而可审计的核心，不包含数据库、托管后端、账户系统、市场 UI 或自动安装流程。
 
 ## 开源与第三方关系
 

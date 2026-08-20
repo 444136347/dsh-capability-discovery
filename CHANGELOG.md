@@ -2,6 +2,13 @@
 
 [中文](./CHANGELOG.zh-CN.md)
 
+## 0.1.1 - 2026-08-20
+
+- Fetch GitHub-hosted static catalogs through the official Contents API first, with the Raw endpoint retained as a fallback.
+- Reuse optional `GITHUB_TOKEN` or `GH_TOKEN` authentication for Contents API requests.
+- Report both endpoint failures only after the API and Raw fallback have failed.
+- Avoid requiring proxy configuration solely because `raw.githubusercontent.com` is unavailable when `api.github.com` remains reachable.
+
 ## 0.1.0 - 2026-08-19
 
 - Added multi-source capability discovery, normalization, deduplication, and deterministic ranking.

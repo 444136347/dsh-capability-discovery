@@ -50,8 +50,8 @@ npm run check
 然后创建并推送标签：
 
 ```bash
-git tag -a v0.1.0 -m "v0.1.0"
-git push origin v0.1.0
+git tag -a v0.1.1 -m "v0.1.1"
+git push origin v0.1.1
 ```
 
 DSH 安装示例应固定使用标签，避免用户安装持续变化的 `main` 分支。

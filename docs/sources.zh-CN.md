@@ -2,7 +2,7 @@
 
 [English](./sources.md)
 
-工具会在运行时获取公开元数据。npm 包和 Git 仓库中都不打包数据源快照。`awesome-dsh-plugins` 适配器读取上游生成的 `web/data.js` 目录，并且只解析其中的 `window.__DSH_DATA__` JSON 赋值。静态目录会尽力使用操作系统临时目录中的 5 分钟磁盘缓存；可以通过 `CAPABILITY_DISCOVERY_CACHE_DIR` 修改缓存位置。该变量不使用 DSH 保留的 `DSH_*` 命名空间，因此可以传递给 Skill 启动的 CLI 子进程。
+工具会在运行时获取公开元数据。npm 包和 Git 仓库中都不打包数据源快照。`awesome-dsh-plugins` 适配器读取上游生成的 `web/data.js` 目录，并且只解析其中的 `window.__DSH_DATA__` JSON 赋值。GitHub 静态目录优先使用官方 Contents API，并保留 `raw.githubusercontent.com` 作为回退；只要 `api.github.com` 可访问，用户就不需要因为 Raw 域名受阻而配置代理。静态目录会尽力使用操作系统临时目录中的 5 分钟磁盘缓存；可以通过 `CAPABILITY_DISCOVERY_CACHE_DIR` 修改缓存位置。该变量不使用 DSH 保留的 `DSH_*` 命名空间，因此可以传递给 Skill 启动的 CLI 子进程。
 
 | 数据源 | 适配器 | 用途 |
 |---|---|---|
@@ -14,6 +14,8 @@
 ## 失败处理
 
 各适配器彼此独立。网络故障以及 HTTP `429`、`502`、`503`、`504` 响应会重试两次；有效的 `Retry-After` 响应头会得到遵守。`400`、`401`、`403`、`404` 等确定性错误不会重试。执行上述策略后仍然存在的超时、HTTP 错误或格式错误会写入 `sourceErrors`，其他成功来源仍会参与结果合并。
+
+对于 GitHub 静态目录，只有 Contents API 和 Raw 端点都失败后，才会把这个逻辑数据源标记为失败。API 请求可以使用可选的 `GITHUB_TOKEN` 或 `GH_TOKEN` 提高 GitHub 限额；读取普通公开数据时不要求配置 Token。
 
 静态缓存写入是可选行为：即使缓存文件系统发生故障，也不会让一次成功的数据源请求失败。缓存内容在使用前会重新解析；格式错误或已经过期的缓存会回退到网络请求。
 

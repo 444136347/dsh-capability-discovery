@@ -5,6 +5,7 @@ import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
 import { fetchJson, fetchParsedText } from '../src/discovery/http.js'
+import * as awesomeDeepseekHarness from '../src/discovery/sources/awesome-deepseek-harness.js'
 import * as awesomeDshPlugins from '../src/discovery/sources/awesome-dsh-plugins.js'
 
 test('fetchJson retries retryable HTTP responses before succeeding', async () => {
@@ -107,6 +108,74 @@ test('fetchParsedText replaces a cached payload rejected by its parser', async (
 
   assert.equal(result, 'current format')
   assert.equal(attempts, 2)
+})
+
+test('awesome-dsh-plugins prefers the GitHub Contents API with raw media headers', async (t) => {
+  const cacheDir = await mkdtemp(join(tmpdir(), 'dsh-capability-api-primary-test-'))
+  t.after(() => rm(cacheDir, { recursive: true, force: true }))
+  const calls = []
+  const fetchImpl = async (url, options) => {
+    calls.push({ url: String(url), headers: options.headers })
+    return new Response('window.__DSH_DATA__ = {"plugins":[{"owner":"acme","repo":"slides","url":"https://github.com/acme/slides"}]};')
+  }
+
+  const result = await awesomeDshPlugins.search({ fetchImpl, cacheDir, token: 'test-token' })
+
+  assert.equal(result[0].fullName, 'acme/slides')
+  assert.equal(calls.length, 1)
+  assert.equal(calls[0].url, awesomeDshPlugins.sourceUrl)
+  assert.equal(calls[0].headers.accept, 'application/vnd.github.raw+json')
+  assert.equal(calls[0].headers.authorization, 'Bearer test-token')
+})
+
+test('awesome-dsh-plugins falls back to Raw when the Contents API fails', async (t) => {
+  const cacheDir = await mkdtemp(join(tmpdir(), 'dsh-capability-raw-fallback-test-'))
+  t.after(() => rm(cacheDir, { recursive: true, force: true }))
+  const calls = []
+  const fetchImpl = async (url) => {
+    calls.push(String(url))
+    if (String(url) === awesomeDshPlugins.sourceUrl) return new Response('forbidden', { status: 403 })
+    return new Response('window.__DSH_DATA__ = {"plugins":[{"owner":"acme","repo":"slides","url":"https://github.com/acme/slides"}]};')
+  }
+
+  const result = await awesomeDshPlugins.search({ fetchImpl, cacheDir })
+
+  assert.equal(result[0].fullName, 'acme/slides')
+  assert.deepEqual(calls, [awesomeDshPlugins.sourceUrl, awesomeDshPlugins.fallbackSourceUrl])
+})
+
+test('awesome-deepseek-harness falls back to Raw when the Contents API fails', async (t) => {
+  const cacheDir = await mkdtemp(join(tmpdir(), 'dsh-capability-readme-fallback-test-'))
+  t.after(() => rm(cacheDir, { recursive: true, force: true }))
+  const calls = []
+  const fetchImpl = async (url) => {
+    calls.push(String(url))
+    if (String(url) === awesomeDeepseekHarness.sourceUrl) return new Response('missing', { status: 404 })
+    return new Response('## Skills\n- [acme/slides](https://github.com/acme/slides) — Build slides. `⭐3`\n')
+  }
+
+  const result = await awesomeDeepseekHarness.search({ fetchImpl, cacheDir })
+
+  assert.equal(result[0].fullName, 'acme/slides')
+  assert.deepEqual(calls, [awesomeDeepseekHarness.sourceUrl, awesomeDeepseekHarness.fallbackSourceUrl])
+})
+
+test('a static GitHub source reports both endpoint failures', async (t) => {
+  const cacheDir = await mkdtemp(join(tmpdir(), 'dsh-capability-all-endpoints-test-'))
+  t.after(() => rm(cacheDir, { recursive: true, force: true }))
+
+  await assert.rejects(
+    awesomeDshPlugins.search({
+      cacheDir,
+      fetchImpl: async () => new Response('missing', { status: 404 }),
+    }),
+    (error) => {
+      assert.match(error.message, /all 2 endpoints failed/i)
+      assert.match(error.message, new RegExp(awesomeDshPlugins.sourceUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+      assert.match(error.message, new RegExp(awesomeDshPlugins.fallbackSourceUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+      return true
+    },
+  )
 })
 
 test('static catalog adapters reuse a five-minute disk cache across calls', async (t) => {

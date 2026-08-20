@@ -2,6 +2,13 @@
 
 [English](./CHANGELOG.md)
 
+## 0.1.1 - 2026-08-20
+
+- GitHub 静态目录优先通过官方 Contents API 获取，并保留 Raw 地址作为回退。
+- Contents API 请求会复用可选的 `GITHUB_TOKEN` 或 `GH_TOKEN` 身份验证。
+- 只有 API 与 Raw 回退都失败后，才会报告该数据源失败并保留两个端点的诊断。
+- 当 `api.github.com` 可访问时，不再因为 `raw.githubusercontent.com` 不可用而要求用户配置代理。
+
 ## 0.1.0 - 2026-08-19
 
 - 新增多源能力发现、标准化、去重和确定性排序。

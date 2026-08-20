@@ -1,7 +1,12 @@
-import { fetchText, STATIC_SOURCE_CACHE_TTL_MS } from '../http.js'
+import {
+  fetchParsedTextFromSources,
+  githubRawHeaders,
+  STATIC_SOURCE_CACHE_TTL_MS,
+} from '../http.js'
 
 export const name = 'awesome-deepseek-harness'
-export const sourceUrl = 'https://raw.githubusercontent.com/Dominic789654/awesome-deepseek-harness/main/README.md'
+export const sourceUrl = 'https://api.github.com/repos/Dominic789654/awesome-deepseek-harness/contents/README.md?ref=main'
+export const fallbackSourceUrl = 'https://raw.githubusercontent.com/Dominic789654/awesome-deepseek-harness/main/README.md'
 
 function typeFromHeading(heading) {
   const h = heading.toLowerCase()
@@ -50,12 +55,15 @@ export function parseAwesomeDeepseekHarness(markdown) {
   return out
 }
 
-export async function search({ fetchImpl = fetch, cacheDir, now, sleepImpl } = {}) {
-  return parseAwesomeDeepseekHarness(await fetchText(sourceUrl, {
+export async function search({ fetchImpl = fetch, token, cacheDir, now, sleepImpl } = {}) {
+  return fetchParsedTextFromSources([
+    { url: sourceUrl, headers: githubRawHeaders(token) },
+    fallbackSourceUrl,
+  ], parseAwesomeDeepseekHarness, {
     fetchImpl,
     cacheDir,
     now,
     sleepImpl,
     cacheTtlMs: STATIC_SOURCE_CACHE_TTL_MS,
-  }))
+  })
 }

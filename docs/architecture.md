@@ -63,7 +63,7 @@ Fields are optional when a source does not provide them.
 
 Each source exports a `name` and an async `search()` function. Discovery uses `Promise.all` with per-source error capture. One failing adapter therefore produces `sourceErrors` instead of failing the whole query.
 
-The shared HTTP layer retries transient network failures and HTTP `429`, `502`, `503`, and `504` responses twice. Static Awesome List/Registry adapters also use a five-minute disk cache so separate CLI processes can reuse recent public catalog responses. The GitHub topic adapter remains uncached to preserve live keyword search behavior.
+The shared HTTP layer retries transient network failures and HTTP `429`, `502`, `503`, and `504` responses twice. GitHub-hosted static adapters try the official Contents API before falling back to the Raw host, while preserving one logical source result. Static Awesome List/Registry adapters also use a five-minute disk cache so separate CLI processes can reuse recent public catalog responses. The GitHub topic adapter remains uncached to preserve live keyword search behavior.
 
 ## Ranking
 

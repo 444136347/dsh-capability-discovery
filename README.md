@@ -73,11 +73,11 @@ The official CLI uses `dsh plugin` as the profile's external package-management 
 
 ### 1. Install the Bundle
 
-Pin a published tag or commit rather than following a moving branch. The current public release is `v0.1.0`:
+Pin a published tag or commit rather than following a moving branch. The current public release is `v0.1.1`:
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile web add \
-  'github:444136347/dsh-capability-discovery#v0.1.0'
+  'github:444136347/dsh-capability-discovery#v0.1.1'
 ```
 
 Current DSH releases add the package to `dependencies` and keep
@@ -130,7 +130,7 @@ Install the Bundle separately into `headless`, then invoke it in a one-shot task
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile headless add \
-  'github:444136347/dsh-capability-discovery#v0.1.0'
+  'github:444136347/dsh-capability-discovery#v0.1.1'
 
 npx -y @deepseek-ai/dsh --profile headless \
   '/capability-discovery Find DSH capabilities for creating slides. Do not install anything.'
@@ -250,7 +250,7 @@ If a source changes format or becomes unavailable, the other sources continue to
 
 ## Project status
 
-The current release is `v0.1.0`. It keeps the project focused on a small, auditable core without a database, hosted backend, account system, marketplace UI, or automatic installation workflow.
+The current release is `v0.1.1`. It keeps the project focused on a small, auditable core without a database, hosted backend, account system, marketplace UI, or automatic installation workflow.
 
 ## Development
 

@@ -1,6 +1,6 @@
 {
   "name": "dsh-capability-discovery",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A DSH Bundle that registers a multi-source capability discovery and risk inspection Skill.",
   "type": "module",
   "main": "index.js",

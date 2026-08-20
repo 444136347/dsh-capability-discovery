@@ -19,6 +19,13 @@ export function githubHeaders(token = process.env.GITHUB_TOKEN ?? process.env.GH
   return headers
 }
 
+export function githubRawHeaders(token = process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN ?? '') {
+  return {
+    ...githubHeaders(token),
+    accept: 'application/vnd.github.raw+json',
+  }
+}
+
 function attemptLabel(count) {
   return `${count} attempt${count === 1 ? '' : 's'}`
 }
@@ -176,4 +183,26 @@ export async function fetchText(url, options = {}) {
 export async function fetchParsedText(url, parse, options = {}) {
   if (typeof parse !== 'function') throw new TypeError('parse must be a function')
   return requestBody(url, { ...options, kind: 'text', parse })
+}
+
+export async function fetchParsedTextFromSources(sources, parse, options = {}) {
+  if (!Array.isArray(sources) || sources.length === 0) {
+    throw new TypeError('sources must contain at least one endpoint')
+  }
+  if (typeof parse !== 'function') throw new TypeError('parse must be a function')
+
+  const errors = []
+  for (const source of sources) {
+    const endpoint = typeof source === 'string' ? { url: source } : source
+    try {
+      return await fetchParsedText(endpoint.url, parse, {
+        ...options,
+        headers: { ...(options.headers ?? {}), ...(endpoint.headers ?? {}) },
+      })
+    } catch (error) {
+      errors.push(error instanceof Error ? error.message : String(error))
+    }
+  }
+
+  throw new Error(`All ${sources.length} endpoints failed: ${errors.join(' | ')}`)
 }

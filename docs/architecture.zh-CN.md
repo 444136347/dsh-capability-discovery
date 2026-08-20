@@ -63,7 +63,7 @@ sequenceDiagram
 
 每个数据源导出 `name` 和异步 `search()` 函数。发现流程使用 `Promise.all` 并单独捕获每个来源的错误，因此一个适配器失败只会产生 `sourceErrors`，不会让整次查询失败。
 
-共享 HTTP 层会对临时网络故障和 HTTP `429`、`502`、`503`、`504` 响应重试两次。静态 Awesome List / Registry 适配器还使用 5 分钟磁盘缓存，让不同 CLI 进程可以复用近期获取的公开目录。GitHub Topic 适配器不使用缓存，以保留实时关键词搜索行为。
+共享 HTTP 层会对临时网络故障和 HTTP `429`、`502`、`503`、`504` 响应重试两次。GitHub 静态适配器会先尝试官方 Contents API，再回退到 Raw 域名，同时仍然只产生一个逻辑数据源结果。静态 Awesome List / Registry 适配器还使用 5 分钟磁盘缓存，让不同 CLI 进程可以复用近期获取的公开目录。GitHub Topic 适配器不使用缓存，以保留实时关键词搜索行为。
 
 ## 排序
 

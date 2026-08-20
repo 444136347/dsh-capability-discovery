@@ -38,7 +38,7 @@ test('resolveProfilePackageFile accepts a safe profile name', () => {
 test('setupProfileBundle appends the installed bundle to profile bundles', async () => {
   const file = await writeProfile({
     dependencies: {
-      'dsh-capability-discovery': 'github:444136347/dsh-capability-discovery#v0.1.0',
+      'dsh-capability-discovery': 'github:444136347/dsh-capability-discovery#v0.1.1',
     },
     dsh: {
       profile: {
@@ -61,7 +61,7 @@ test('setupProfileBundle appends the installed bundle to profile bundles', async
 test('setupProfileBundle leaves an existing bundle entry unchanged', async () => {
   const file = await writeProfile({
     dependencies: {
-      'dsh-capability-discovery': 'github:444136347/dsh-capability-discovery#v0.1.0',
+      'dsh-capability-discovery': 'github:444136347/dsh-capability-discovery#v0.1.1',
     },
     dsh: {
       profile: {

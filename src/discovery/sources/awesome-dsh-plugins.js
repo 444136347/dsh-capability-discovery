@@ -1,7 +1,12 @@
-import { fetchParsedText, STATIC_SOURCE_CACHE_TTL_MS } from '../http.js'
+import {
+  fetchParsedTextFromSources,
+  githubRawHeaders,
+  STATIC_SOURCE_CACHE_TTL_MS,
+} from '../http.js'
 
 export const name = 'awesome-dsh-plugins'
-export const sourceUrl = 'https://raw.githubusercontent.com/kejixiaoliang/awesome-dsh-plugins/main/web/data.js'
+export const sourceUrl = 'https://api.github.com/repos/kejixiaoliang/awesome-dsh-plugins/contents/web/data.js?ref=main'
+export const fallbackSourceUrl = 'https://raw.githubusercontent.com/kejixiaoliang/awesome-dsh-plugins/main/web/data.js'
 
 export function parseAwesomeDshPlugins(body) {
   return (body?.plugins ?? []).filter((item) => item?.fullName || item?.url).map((item) => ({
@@ -28,8 +33,11 @@ export function parseAwesomeDshPluginsScript(script) {
   return parseAwesomeDshPlugins(JSON.parse(match[1]))
 }
 
-export async function search({ fetchImpl = fetch, cacheDir, now, sleepImpl } = {}) {
-  return fetchParsedText(sourceUrl, parseAwesomeDshPluginsScript, {
+export async function search({ fetchImpl = fetch, token, cacheDir, now, sleepImpl } = {}) {
+  return fetchParsedTextFromSources([
+    { url: sourceUrl, headers: githubRawHeaders(token) },
+    fallbackSourceUrl,
+  ], parseAwesomeDshPluginsScript, {
     fetchImpl,
     cacheDir,
     now,
