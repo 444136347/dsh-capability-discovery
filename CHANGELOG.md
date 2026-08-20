@@ -2,6 +2,13 @@
 
 [中文](./CHANGELOG.zh-CN.md)
 
+## 0.1.2 - 2026-08-20
+
+- Make `--type mcp` a strict MCP Server filter based on explicit server evidence in repository names and descriptions.
+- Keep MCP management consoles, clients, bridges, and uncertain integrations out of strict server results.
+- Add `mcpRole` classification for `server`, `client`, `manager`, `bridge`, and `unknown` candidates.
+- Clarify the distinction between MCP Server searches and broader MCP-related capability searches in the Skill and bilingual documentation.
+
 ## 0.1.1 - 2026-08-20
 
 - Fetch GitHub-hosted static catalogs through the official Contents API first, with the Raw endpoint retained as a fallback.

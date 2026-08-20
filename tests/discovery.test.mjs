@@ -41,3 +41,31 @@ test('discoverCapabilities returns no candidates for an empty library query', as
 
   assert.deepEqual(result.results, [])
 })
+
+test('discoverCapabilities limits MCP searches to explicit server candidates', async () => {
+  const sources = [{
+    name: 'catalog',
+    search: async () => [
+      {
+        fullName: 'PerryLink/dsh-mcp-panel',
+        description: 'MCP management console for the official DeepSeek Harness MCP client.',
+        type: 'mcp',
+      },
+      {
+        fullName: 'gxpppp/dsh-search-mcp',
+        description: "Replace DSH's built-in web search with search MCP servers.",
+        type: 'mcp',
+      },
+      {
+        fullName: 'bobleer/deepseek-harness-plugin-mcp',
+        description: 'MCP server that lets any agent discover and run DSH plugins.',
+        type: 'plugin',
+      },
+    ],
+  }]
+
+  const result = await discoverCapabilities({ query: 'mcp server', type: 'mcp', sources, limit: 5 })
+
+  assert.deepEqual(result.results.map((item) => item.fullName), ['bobleer/deepseek-harness-plugin-mcp'])
+  assert.equal(result.results[0].mcpRole, 'server')
+})

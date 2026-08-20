@@ -47,6 +47,7 @@ A normalized candidate may contain:
   "url": "https://github.com/owner/repo",
   "description": "...",
   "type": "plugin",
+  "mcpRole": "manager",
   "category": "...",
   "stars": 100,
   "pushedAt": "2026-08-17T00:00:00Z",
@@ -58,6 +59,8 @@ A normalized candidate may contain:
 ```
 
 Fields are optional when a source does not provide them.
+
+MCP classification is normalized after candidates from all sources are merged. `type: "mcp"` requires explicit server evidence in the repository name or description. MCP-related management consoles, clients, and bridges retain their actual capability type and expose the more specific `mcpRole`; uncertain MCP metadata is marked `unknown` instead of being treated as a server.
 
 ## Source isolation
 

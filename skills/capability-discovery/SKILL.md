@@ -18,7 +18,7 @@ Extract one to three concrete English keywords from the request. Run one combine
 node ../../cli/dsh-capability.mjs search <keywords...> --limit 8 --json
 ```
 
-If the user explicitly asks for a Skill or MCP server, add `--type skill` or `--type mcp`.
+If the user explicitly asks for a Skill, add `--type skill`. MCP Server searches use the strict `--type mcp` filter, which returns only candidates with explicit server evidence. If the user asks for a management console, client, bridge, or other MCP-related integration, do not use `--type mcp`; search the broader capability set and explain the returned `type` and `mcpRole`.
 
 Do not repeat the same search command. Retry once only if the first search returns no relevant candidates, using a different or broader query. Do not rerun a successful search merely to reformat or summarize its JSON.
 

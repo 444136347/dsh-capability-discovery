@@ -73,11 +73,11 @@ The official CLI uses `dsh plugin` as the profile's external package-management 
 
 ### 1. Install the Bundle
 
-Pin a published tag or commit rather than following a moving branch. The current public release is `v0.1.1`:
+Pin a published tag or commit rather than following a moving branch. The current public release is `v0.1.2`:
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile web add \
-  'github:444136347/dsh-capability-discovery#v0.1.1'
+  'github:444136347/dsh-capability-discovery#v0.1.2'
 ```
 
 Current DSH releases add the package to `dependencies` and keep
@@ -130,7 +130,7 @@ Install the Bundle separately into `headless`, then invoke it in a one-shot task
 
 ```bash
 npx -y @deepseek-ai/dsh plugin --profile headless add \
-  'github:444136347/dsh-capability-discovery#v0.1.1'
+  'github:444136347/dsh-capability-discovery#v0.1.2'
 
 npx -y @deepseek-ai/dsh --profile headless \
   '/capability-discovery Find DSH capabilities for creating slides. Do not install anything.'
@@ -166,11 +166,14 @@ pnpm exec dsh-capability setup --profile web
 dsh-capability search <keywords...> [--limit 10] [--type plugin|skill|mcp|profile|agent|orchestrator|ui|runtime|workflow] [--json]
 ```
 
+`--type mcp` is a strict MCP Server filter. It keeps candidates whose name or description explicitly identifies a server; MCP management consoles, clients, bridges, and other integrations remain under their actual capability type. A broad search can expose their `mcpRole` as `server`, `client`, `manager`, `bridge`, or `unknown`.
+
 The result includes:
 
 - `score`: ranking score for the current query;
 - `sources`: independent indexes that surfaced the repository;
 - `type`: plugin / skill / MCP / profile / agent / runtime / UI / workflow when known;
+- `mcpRole`: MCP server / client / manager / bridge / unknown when MCP-related evidence is present;
 - GitHub metadata such as stars, license, and recent activity when a source provides it;
 - `sourceErrors`: sources that failed during this search.
 
@@ -238,7 +241,7 @@ The score is a recommendation aid, not a quality certificate.
 |---|---|
 | DSH Plugin | Supported |
 | Agent Skill | Supported |
-| MCP Server | Supported when identified by an indexed source |
+| MCP Server | Strict metadata-evidence classification with `--type mcp` |
 | Profile / Patch | Experimental classification |
 | Agent / Orchestrator / Runtime / UI | Experimental classification |
 
@@ -250,7 +253,7 @@ If a source changes format or becomes unavailable, the other sources continue to
 
 ## Project status
 
-The current release is `v0.1.1`. It keeps the project focused on a small, auditable core without a database, hosted backend, account system, marketplace UI, or automatic installation workflow.
+The current release is `v0.1.2`. It keeps the project focused on a small, auditable core without a database, hosted backend, account system, marketplace UI, or automatic installation workflow.
 
 ## Development
 

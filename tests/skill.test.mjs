@@ -50,3 +50,11 @@ test('skill does not infer installability from search metadata', async () => {
   assert.match(skill, /compatible with the user's profile/i)
   assert.match(skill, /Search metadata alone is insufficient/i)
 })
+
+test('skill distinguishes MCP servers from MCP-related integrations', async () => {
+  const skill = await readSkill()
+
+  assert.match(skill, /MCP Server searches use the strict `--type mcp` filter/i)
+  assert.match(skill, /management console, client, bridge, or other MCP-related integration/i)
+  assert.match(skill, /do not use `--type mcp`/i)
+})

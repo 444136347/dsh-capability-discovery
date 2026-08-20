@@ -51,6 +51,83 @@ test('mergeCandidates keeps the first type when two specific types conflict', ()
   assert.equal(merged[0].type, 'skill')
 })
 
+test('mergeCandidates keeps an MCP management console classified as a plugin', () => {
+  const merged = mergeCandidates([
+    {
+      source: 'github-topic',
+      candidates: [{
+        fullName: 'PerryLink/dsh-mcp-panel',
+        url: 'https://github.com/PerryLink/dsh-mcp-panel',
+        description: 'MCP management console for the official DeepSeek Harness MCP client.',
+        type: 'plugin',
+      }],
+    },
+    {
+      source: 'mcp-heading',
+      candidates: [{
+        fullName: 'PerryLink/dsh-mcp-panel',
+        url: 'https://github.com/PerryLink/dsh-mcp-panel',
+        description: 'MCP management console for the official DeepSeek Harness MCP client.',
+        type: 'mcp',
+      }],
+    },
+  ])
+
+  assert.equal(merged[0].type, 'plugin')
+  assert.equal(merged[0].mcpRole, 'manager')
+})
+
+test('mergeCandidates keeps an MCP-backed search integration classified as a plugin', () => {
+  const merged = mergeCandidates([
+    {
+      source: 'mcp-heading',
+      candidates: [{
+        fullName: 'gxpppp/dsh-search-mcp',
+        url: 'https://github.com/gxpppp/dsh-search-mcp',
+        description: "Replace DSH's built-in web search with search MCP servers.",
+        type: 'mcp',
+      }],
+    },
+  ])
+
+  assert.equal(merged[0].type, 'plugin')
+  assert.equal(merged[0].mcpRole, 'client')
+})
+
+test('mergeCandidates classifies an explicitly declared MCP server as MCP', () => {
+  const merged = mergeCandidates([
+    {
+      source: 'github-topic',
+      candidates: [{
+        fullName: 'bobleer/deepseek-harness-plugin-mcp',
+        url: 'https://github.com/bobleer/deepseek-harness-plugin-mcp',
+        description: 'MCP server that lets any agent discover, install, and run DSH plugins.',
+        type: 'plugin',
+      }],
+    },
+  ])
+
+  assert.equal(merged[0].type, 'mcp')
+  assert.equal(merged[0].mcpRole, 'server')
+})
+
+test('mergeCandidates does not treat an MCP server bridge as a server', () => {
+  const merged = mergeCandidates([
+    {
+      source: 'github-topic',
+      candidates: [{
+        fullName: 'Heath96/dsh-heath-mcp',
+        url: 'https://github.com/Heath96/dsh-heath-mcp',
+        description: 'MCP server bridge for DeepSeek Harness with stdio and HTTP transports.',
+        type: 'mcp',
+      }],
+    },
+  ])
+
+  assert.equal(merged[0].type, 'plugin')
+  assert.equal(merged[0].mcpRole, 'bridge')
+})
+
 test('rankCandidates rewards relevance and multi-source agreement', () => {
   const ranked = rankCandidates([
     { fullName: 'a/ppt-helper', description: 'make powerpoint slides', sources: ['github-topic', 'awesome'], stars: 3, pushedAt: '2026-08-16T00:00:00Z' },

@@ -47,6 +47,7 @@ sequenceDiagram
   "url": "https://github.com/owner/repo",
   "description": "...",
   "type": "plugin",
+  "mcpRole": "manager",
   "category": "...",
   "stars": 100,
   "pushedAt": "2026-08-17T00:00:00Z",
@@ -58,6 +59,8 @@ sequenceDiagram
 ```
 
 某个数据源没有提供对应信息时，相关字段可以缺省。
+
+不同数据源的候选完成合并后，系统会统一校正 MCP 分类。只有仓库名称或描述存在明确服务端证据时，才会输出 `type: "mcp"`。MCP 管理面板、客户端和桥接器会保留实际能力类型，并通过 `mcpRole` 给出更具体的角色；证据不足的 MCP 元数据标记为 `unknown`，不会当作服务端返回。
 
 ## 数据源隔离
 

@@ -22,6 +22,51 @@ function preferredType(current, incoming) {
   return current ?? incoming ?? 'plugin'
 }
 
+function mcpEvidence(candidate) {
+  return `${candidate.fullName ?? ''} ${candidate.name ?? ''} ${candidate.description ?? ''}`.toLowerCase()
+}
+
+export function classifyMcpRole(candidate) {
+  const text = mcpEvidence(candidate)
+  const description = String(candidate.description ?? '').toLowerCase()
+  const name = `${candidate.fullName ?? ''} ${candidate.name ?? ''}`.toLowerCase()
+
+  if (
+    /\bmcp\b.{0,48}\b(?:management|manager|console|panel|crud)\b/.test(text)
+    || /\b(?:manage|manages|managing)\b.{0,48}\bmcp\s+servers?\b/.test(text)
+  ) return 'manager'
+
+  if (/\bmcp\b.{0,32}\b(?:bridge|gateway|proxy)\b|\b(?:bridge|gateway|proxy)\b.{0,32}\bmcp\b/.test(text)) {
+    return 'bridge'
+  }
+
+  if (
+    /(?:^|[-_/])mcp-server(?:$|[-_/])/.test(name)
+    || /^mcp\s+server\b/.test(description)
+    || /\bmcp\s+server\s+that\b/.test(description)
+    || /\b(?:is|provides?|runs?|starts?|implements?|acts\s+as|serves\s+as)\s+(?:an?\s+)?mcp\s+server\b/.test(description)
+    || /\bas\s+(?:an?\s+)?mcp\s+server\b/.test(description)
+  ) return 'server'
+
+  if (
+    /\bmcp\s+client\b|\bclient\b.{0,32}\bmcp\b/.test(text)
+    || /\b(?:connect|connects|connecting|mount|mounts|replace|replaces|route|routes)\b.{0,96}\bmcp\s+servers?\b/.test(description)
+  ) return 'client'
+
+  if (candidate.type === 'mcp' || /\bmcp\b/.test(text)) return 'unknown'
+  return null
+}
+
+function normalizeMcpClassification(candidate) {
+  const mcpRole = classifyMcpRole(candidate)
+  if (!mcpRole) return candidate
+  return {
+    ...candidate,
+    type: mcpRole === 'server' ? 'mcp' : candidate.type === 'mcp' ? 'plugin' : candidate.type,
+    mcpRole,
+  }
+}
+
 export function mergeCandidates(sourceResults) {
   const map = new Map()
 
@@ -65,7 +110,7 @@ export function mergeCandidates(sourceResults) {
     }
   }
 
-  return [...map.values()]
+  return [...map.values()].map(normalizeMcpClassification)
 }
 
 export function candidateMatchesTerms(candidate, terms) {

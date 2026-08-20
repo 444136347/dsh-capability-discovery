@@ -2,6 +2,13 @@
 
 [English](./CHANGELOG.md)
 
+## 0.1.2 - 2026-08-20
+
+- `--type mcp` 改为严格的 MCP Server 筛选，依据仓库名称和描述中的明确服务端证据进行判断。
+- MCP 管理面板、客户端、桥接器和证据不足的集成不再进入严格服务端结果。
+- 新增 `mcpRole` 分类，用于区分 `server`、`client`、`manager`、`bridge` 和 `unknown`。
+- 在 Skill 和双语文档中明确区分 MCP Server 搜索与宽泛的 MCP 相关能力搜索。
+
 ## 0.1.1 - 2026-08-20
 
 - GitHub 静态目录优先通过官方 Contents API 获取，并保留 Raw 地址作为回退。
